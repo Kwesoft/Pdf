@@ -2,10 +2,8 @@
 
 namespace Kwesoft.Pdf.Document.Objects
 {
-	public class PdfName : PdfObject
+	public class PdfName : PdfObject<string>
 	{
-		public string Value { get; set; }
-
 		public static implicit operator PdfName(string s)
 		{
 			return new PdfName { Value = s };

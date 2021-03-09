@@ -1,8 +1,7 @@
 ﻿namespace Kwesoft.Pdf.Document.Objects
 {
-	class PdfBool : PdfObject
+	public class PdfBool : PdfObject<bool>
 	{
-		public bool Value { get; set; }
 		public override string ToString() => $"{Value}";
 	}
 }

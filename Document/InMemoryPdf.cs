@@ -25,7 +25,10 @@ namespace Kwesoft.Pdf.Document
 		private PdfTrailer _trailer { get; }
 		PdfTrailer IEditablePdfDocument.Trailer => _trailer;
 
-		public int Length { get; private set; }
+		private int _length { get; set; }
+		int IEditablePdfDocument.Length => _length;
+
+		private IPdfEditor _editor { get; }
 
 		public InMemoryPdf(byte[] data) : this(data, null) 
 		{
@@ -39,30 +42,27 @@ namespace Kwesoft.Pdf.Document
 
 			_data = data;
 			_reader = reader ?? new PdfReader(this);
-			Length = data.Length;
+			_length = data.Length;
 			Header = _reader.ReadHeader();
 			_trailer = _reader.ReadTrailer();
 			_crossReferenceTable = _reader.ReadCrossReferenceTable(_trailer);
-
+			
 			Root = (PdfDictionary)_reader.ReadObject((PdfIndirectReference)_trailer.TrailerDictionary.Value["Root"]);
 			Info = (PdfDictionary)_reader.ReadObject((PdfIndirectReference)_trailer.TrailerDictionary.Value["Info"]);
+
+			_editor = new PdfEditor(this);
 		}
 
-		public PdfObject ReadObject(PdfIndirectReference reference) => _reader.ReadObject(reference);
+		PdfObject IEditablePdfDocument.ReadObject(PdfIndirectReference reference) => _reader.ReadObject(reference);
 
-		public byte Read(int index) => _data[index];
+		byte IEditablePdfDocument.Read(int index) => _data[index];
 
-		public byte[] Read(int index, int length) {
+		byte[] IEditablePdfDocument.Read(int index, int length) {
 			var result = new byte[length];
 			Buffer.BlockCopy(_data, index, result, 0, length);
 			return result;
 		}
-
-		public IPdfEditor GetEditor()
-		{
-			return new PdfEditor(this);
-		}
-
+		
 		public void Replace(int index, int length, byte[] replaceWith)
 		{
 			var newData = new byte[_data.Length + (replaceWith.Length - length)];
@@ -76,5 +76,21 @@ namespace Kwesoft.Pdf.Document
 		{
 			File.WriteAllBytes(filename, _data);
 		}
+
+		public byte[] GetBytes()
+		{
+			return (byte[])_data.Clone();
+		}
+
+		void IEditablePdfDocument.Add(PdfDictionary dictionary, PdfName key, PdfObject value) => _editor.Add(dictionary, key, value);
+		void IEditablePdfDocument.Remove(PdfDictionary dictionary, PdfName key) => _editor.Remove(dictionary, key);
+
+		void IEditablePdfDocument.Add(PdfArray array, PdfObject value) => _editor.Add(array, value);
+		void IEditablePdfDocument.Remove(PdfArray array, int index) => _editor.Remove(array, index);
+		void IEditablePdfDocument.Remove(PdfArray array, PdfObject value) => _editor.Remove(array, value);
+
+		void IEditablePdfDocument.Edit<TPdfObject>(TPdfObject value, Action edit) => _editor.Edit(value, edit);
+
+		PdfIndirectReference IPdfDocument.Add(PdfObject obj) => _editor.Add(obj);
 	}
 }

@@ -6,7 +6,21 @@ namespace Kwesoft.Pdf.Document.Objects
 {
 	public class PdfDictionary : PdfObject
 	{
-		public Dictionary<PdfName, PdfObject> Value { get; set; }
+		internal Dictionary<PdfName, PdfObject> Value { get; }
+
+		public PdfDictionary()
+		{
+			Value = new Dictionary<PdfName, PdfObject>();
+		}
+
+		public PdfDictionary(Dictionary<PdfName, PdfObject> value)
+		{
+			Value = value;
+		}
+
+		public PdfObject this[PdfName key] => Value[key];
+		public int Count => Value.Count;
+		public bool ContainsKey(PdfName key) => Value.ContainsKey(key);
 
 		private string _GetValues()
 		{
@@ -19,6 +33,42 @@ namespace Kwesoft.Pdf.Document.Objects
 		{
 			var values = _GetValues();
 			return $"{PdfKeywords.DictionaryStart}{values}{PdfKeywords.DictionaryEnd}";
+		}
+
+		protected override void _DocumentAssigned()
+		{
+			if(Value != null)
+				foreach(var kvp in Value)
+				{
+					if (kvp.Key != null)
+						kvp.Key.Document = Document;
+					if (kvp.Value != null)
+						kvp.Value.Document = Document;
+				}
+		}
+
+		public void Add(PdfName key, PdfObject value)
+		{
+			if(Document != null)
+			{
+				Document.Add(this, key, value);
+			}
+			else
+			{
+				Value.Add(key, value);
+			}
+		}
+
+		public void Remove(PdfName key)
+		{
+			if (Document != null)
+			{
+				Document.Remove(this, key);
+			}
+			else
+			{
+				Value.Remove(key);
+			}
 		}
 	}
 }

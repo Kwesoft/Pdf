@@ -2,9 +2,8 @@
 
 namespace Kwesoft.Pdf.Document.Objects
 {
-	public class PdfString : PdfObject
-	{
-		public string Value { get; set; }
+	public class PdfString : PdfObject<string>
+	{ 
 		public override string ToString() => $"{PdfKeywords.StringStart}{Value}{PdfKeywords.StringEnd}";
 	}
 }

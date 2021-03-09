@@ -41,7 +41,8 @@ namespace Kwesoft.Pdf
 				Value = _document.Encoding.GetString(_document.Read(index + 1, end - (index + 1))),
 				Offset = _GetOffset(index, parent),
 				Length = end - index,
-				Parent = parent
+				Parent = parent,
+				Document = _document
 			};
 		}
 
@@ -49,11 +50,11 @@ namespace Kwesoft.Pdf
 		{
 			var pos = index + 1;
 			var list = new List<PdfObject>();
-			var result = new PdfArray
+			var result = new PdfArray(list)
 			{
-				Value = list,
 				Offset = _GetOffset(index, parent),
-				Parent = parent
+				Parent = parent,
+				Document = _document
 			};
 
 			while (!_Equal(_document, pos, _document.Keywords.ArrayEnd))
@@ -77,7 +78,8 @@ namespace Kwesoft.Pdf
 				Offset = _GetOffset(index, parent),
 				Length = length + 1,
 				Value = _document.Encoding.GetString(_document.Read(index + 1, length - 1)),
-				Parent = parent
+				Parent = parent,
+				Document = _document
 			};
 		}
 
@@ -88,7 +90,8 @@ namespace Kwesoft.Pdf
 				Value = double.Parse(_document.Encoding.GetString(_document.Read(index, length))),
 				Offset = _GetOffset(index, parent),
 				Length = length,
-				Parent = parent
+				Parent = parent,
+				Document = _document
 			};
 		}
 
@@ -99,7 +102,8 @@ namespace Kwesoft.Pdf
 				Value = int.Parse(_document.Encoding.GetString(_document.Read(index, length))),
 				Offset = _GetOffset(index, parent),
 				Length = length,
-				Parent = parent
+				Parent = parent,
+				Document = _document
 			};
 		}
 
@@ -118,7 +122,8 @@ namespace Kwesoft.Pdf
 				GenerationNumber = int.Parse(indirectReferenceData[1]),
 				Offset = _GetOffset(index, parent),
 				Length = length,
-				Parent = parent
+				Parent = parent,
+				Document = _document
 			};
 		}
 
@@ -134,7 +139,8 @@ namespace Kwesoft.Pdf
 				Properties = (PdfDictionary)result,
 				Offset = index,
 				Length = end - index,
-				Data = _document.Read(streamStart, end - _document.Keywords.StreamEndLines.Length - streamStart)
+				Data = _document.Read(streamStart, end - _document.Keywords.StreamEndLines.Length - streamStart),
+				Document = _document
 			};
 			result.Parent = stream;
 			return stream;
@@ -194,7 +200,11 @@ namespace Kwesoft.Pdf
 			if (!_Equal(_document, index, _document.Keywords.DictionaryStart)) throw new Exception("Invalid dictionary");
 			var pos = index + 2;
 			var dictionary = new Dictionary<PdfName, PdfObject>();
-			var result = new PdfDictionary { Offset = _GetOffset(index, parent), Value = dictionary, Parent = parent };
+			var result = new PdfDictionary(dictionary){ 
+				Offset = _GetOffset(index, parent), 
+				Parent = parent,
+				Document = _document
+			};
 
 			while (!_Equal(_document, pos, _document.Keywords.DictionaryEnd))
 			{
@@ -219,9 +229,9 @@ namespace Kwesoft.Pdf
 		{
 			var pos = trailer.CrossReferenceTableOffset;
 			var length = trailer.Index - pos;
-			var crossReferenceData = _document.Encoding.GetString(_document.Read(pos, length - 1)).Split(PdfKeywords.LineBreak);
+			var crossReferenceData = _document.Encoding.GetString(_document.Read(pos, length - 1)).Split(new[] { PdfKeywords.LineBreak }, StringSplitOptions.RemoveEmptyEntries);
 
-			var crossReferenceTableSummary = crossReferenceData[1].Split(PdfKeywords.Space);
+			var crossReferenceTableSummary = crossReferenceData[1].Split(new[] { PdfKeywords.Space }, StringSplitOptions.RemoveEmptyEntries);
 			var firstObjectNumber = int.Parse(crossReferenceTableSummary[0]);
 			var objectCount = int.Parse(crossReferenceTableSummary[1]);
 
@@ -231,12 +241,13 @@ namespace Kwesoft.Pdf
 				Offset = pos,
 				Length = length,
 				FirstObjectNumber = firstObjectNumber,
-				ObjectCount = objectCount
+				ObjectCount = objectCount,
+				Document = _document
 			};
 
 			for (var i = 2; i < crossReferenceData.Length; i++)
 			{
-				result.ObjectOffsets.Add(firstObjectNumber + i - 2, int.Parse(crossReferenceData[i].Split(PdfKeywords.Space)[0]));
+				result.ObjectOffsets.Add(firstObjectNumber + i - 2, int.Parse(crossReferenceData[i].Split(new[] { PdfKeywords.Space }, StringSplitOptions.RemoveEmptyEntries)[0]));
 			}
 
 			return result;
@@ -254,7 +265,8 @@ namespace Kwesoft.Pdf
 			{
 				Offset = trailerPos,
 				Length = eofPos - trailerPos,
-				CrossReferenceTableOffset = int.Parse(startxrefData)
+				CrossReferenceTableOffset = int.Parse(startxrefData),
+				Document = _document
 			};
 			result.TrailerDictionary = _ReadDictionary(trailerPos + 8, result);
 			return result;

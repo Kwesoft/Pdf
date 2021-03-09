@@ -9,7 +9,7 @@ using System.Text;
 namespace Kwesoft.Pdf
 {
 
-	public class PdfEditor : IPdfEditor
+	internal class PdfEditor : IPdfEditor
 	{
 		IEditablePdfDocument _document;
 
@@ -18,13 +18,7 @@ namespace Kwesoft.Pdf
 			_document = document;
 		}
 
-		public void Add(PdfDictionary dictionary, PdfName key, PdfObject value)
-		{
-			_Edit(dictionary, obj => {
-				obj.Value.Add(key, value);
-			});
-		}
-		public PdfIndirectReference Add(PdfObject obj)
+		PdfIndirectReference IPdfEditor.Add(PdfObject obj)
 		{
 			var maxObjectNumber = _document.CrossReferenceTable.ObjectOffsets.Max(o => o.Key);
 			var maxIndirectReference = _document.CrossReferenceTable.ObjectOffsets[maxObjectNumber];
@@ -54,13 +48,35 @@ namespace Kwesoft.Pdf
 				ObjectNumber = objectNumber,
 				Offset = index,
 				Length = bytes.Length,
-				Parent = null
+				Parent = null,
+				Document = _document
 			};
 		}
 
-		public void Add(PdfArray array, PdfString value)
+		void IPdfEditor.Add(PdfDictionary dictionary, PdfName key, PdfObject value)
 		{
-			throw new NotImplementedException();
+			_Edit(dictionary, () => dictionary.Value.Add(key, value));
+		}
+
+		void IPdfEditor.Remove(PdfDictionary dictionary, PdfName key)
+		{
+			_Edit(dictionary, () =>
+				dictionary.Value.Remove(key));
+		}
+
+		void IPdfEditor.Add(PdfArray array, PdfObject value)
+		{
+			_Edit(array, () => array.Value.Add(value));
+		}
+
+		void IPdfEditor.Remove(PdfArray array, PdfObject value)
+		{
+			_Edit(array, () => array.Value.Remove(value));
+		}
+
+		void IPdfEditor.Remove(PdfArray array, int index)
+		{
+			_Edit(array, () => array.Value.RemoveAt(index));
 		}
 
 		private void _AdjustObjectLength(PdfObject obj, int adjustBy, bool adjustReferences)
@@ -87,15 +103,15 @@ namespace Kwesoft.Pdf
 			var oldCrossReferenceTableLength = _document.CrossReferenceTable.Length;
 			_document.CrossReferenceTable.Offset += adjustBy;
 
-			_Edit(_document.CrossReferenceTable, obj => {
-				obj.ObjectCount = obj.ObjectOffsets.Count;
+			_Edit(_document.CrossReferenceTable, () => {
+				_document.CrossReferenceTable.ObjectCount = _document.CrossReferenceTable.ObjectOffsets.Count;
 			}, false);
 
 			_document.Trailer.Offset += adjustBy + (_document.CrossReferenceTable.Length - oldCrossReferenceTableLength);
 
-			_Edit(_document.Trailer, obj => {
-				obj.CrossReferenceTableOffset = _document.CrossReferenceTable.Index;
-				obj.TrailerDictionary.Value["Size"] = new PdfInteger { Value = _document.CrossReferenceTable.ObjectCount };
+			_Edit(_document.Trailer, () => {
+				_document.Trailer.CrossReferenceTableOffset = _document.CrossReferenceTable.Index;
+				_document.Trailer.TrailerDictionary.Value["Size"] = new PdfInteger { Value = _document.CrossReferenceTable.ObjectCount };
 			}, false);
 		}
 
@@ -105,30 +121,25 @@ namespace Kwesoft.Pdf
 			if(adjustReferences) _AdjustReferences(obj.Index, adjustBy);
 		}
 
-		private void _Edit<TPdfObject>(TPdfObject value, Action<TPdfObject> edit, bool adjustReferences = true) where TPdfObject : PdfObject
+		private void _Edit<TPdfObject>(TPdfObject value, Action edit, bool adjustReferences = true) where TPdfObject : PdfObject
 		{
 			if(value.Parent != null)
 			{
-				_Edit(value.Parent, _ => edit(value), adjustReferences);
+				_Edit(value.Parent, edit, adjustReferences);
 				return;
 			}
 			var oldIndex = value.Index;
 			var oldLength = value.Length;
-			edit(value);
+			edit();
 			var newRawValue = _document.Encoding.GetBytes(value.ToString());
 			var newLength = newRawValue.Length;
 			_document.Replace(oldIndex, oldLength, newRawValue);
 			_AdjustLength(value, newLength - oldLength, adjustReferences);
 		}
 
-		public void Edit<TPdfObject>(TPdfObject value, Action<TPdfObject> edit) where TPdfObject : PdfObject
+		void IPdfEditor.Edit<TPdfObject>(TPdfObject value, Action edit)
 		{
 			_Edit(value, edit);
-		}
-
-		public void Save(string filename)
-		{
-			_document.Save(filename);
 		}
 	}
 }

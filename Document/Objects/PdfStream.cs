@@ -16,9 +16,12 @@ namespace Kwesoft.Pdf.Document.Objects
 			set 
 			{
 				_properties = value;
-				if(_properties != null) _properties.Parent = this;
+				if (_properties == null) return;
+					
+				_properties.Parent = this;
 			} 
 		}
+
 		public byte[] Data { get; set; }
 
 		private string _GetStreamStart() => _properties == null ? PdfKeywords.StreamStart : $"{PdfKeywords.Space}{PdfKeywords.StreamStart}";
@@ -27,6 +30,12 @@ namespace Kwesoft.Pdf.Document.Objects
 		public override string ToString()
 		{
 			return $"{_GetPrefix()}[data]{_GetSuffix()}";
+		}
+
+		protected override void _DocumentAssigned()
+		{
+			if (_properties != null)
+				_properties.Document = Document;
 		}
 
 		internal override byte[] GetBytes(Encoding encoding)

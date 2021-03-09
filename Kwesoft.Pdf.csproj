@@ -2,15 +2,30 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
     <RootNamespace>Kwesoft.Pdf</RootNamespace>
     <AssemblyName>Pdf</AssemblyName>
+    <Authors>Kwesoft</Authors>
+    <PackageId>Kwesoft.Pdf</PackageId>
+    <Company />
+    <Description>Free open-source Pdf parsing and editing library</Description>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Kwesoft/Pdf</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Kwesoft/Pdf</RepositoryUrl>
+    <Version>0.12.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

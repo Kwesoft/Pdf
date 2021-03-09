@@ -2,7 +2,7 @@
 
 namespace Kwesoft.Pdf.Document.Objects
 {
-	class PdfNull : PdfObject
+	public class PdfNull : PdfObject
 	{
 		public override string ToString()
 		{
