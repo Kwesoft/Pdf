@@ -1,6 +1,11 @@
 name: Publish nuget package
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package Version (major.minor.patch)'
+        required: true
 
 jobs:
   build:
@@ -14,4 +19,4 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Build
-      run: dotnet pack -c Release -o out -p:PackageVersion=$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmmss"))
+      run: dotnet pack -c Release -o out -p:PackageVersion=${{ github.event.inputs.version }}
