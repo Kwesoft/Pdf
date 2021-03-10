@@ -1,4 +1,4 @@
-name: .NET
+name: Build & Publish
 
 on:
   push:
@@ -20,6 +20,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -p:PackageVersion=$(BUILD_TIMESTAMP)
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Pack
+      run: dotnet pack -c Release --no-build 
