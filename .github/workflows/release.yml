@@ -14,4 +14,4 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Build
-      run: dotnet pack -c Release -o out -p:PackageVersion=$([System.DateTime]::Now.ToString(&quot;yyyy.MM.dd.HHmmss&quot;))
+      run: dotnet pack -c Release -o out -p:PackageVersion=$([System.DateTime]::Now.ToString("yyyy.MM.dd.HHmmss"))
