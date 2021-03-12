@@ -5,5 +5,5 @@
 A .NET library for pdf editing & parsing.
 
 ## License
-NExifTool is licensed under the MIT license.  See LICENSE.md for more
+Kwesoft.Pdf is licensed under the MIT license.  See LICENSE.md for more
 information.
