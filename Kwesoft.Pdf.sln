@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwesoft.Pdf", "Kwesoft.Pdf.csproj", "{14F21609-DD5E-483A-9113-5E5ED7E5A808}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kwesoft.Pdf", "Kwesoft.Pdf\Kwesoft.Pdf.csproj", "{14F21609-DD5E-483A-9113-5E5ED7E5A808}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kwesoft.Pdf.UnitTests", "Kwesoft.Pdf.UnitTests\Kwesoft.Pdf.UnitTests.csproj", "{2DE64AA8-D0B1-4899-A9A0-F7E0BB93B40A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{14F21609-DD5E-483A-9113-5E5ED7E5A808}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14F21609-DD5E-483A-9113-5E5ED7E5A808}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14F21609-DD5E-483A-9113-5E5ED7E5A808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DE64AA8-D0B1-4899-A9A0-F7E0BB93B40A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DE64AA8-D0B1-4899-A9A0-F7E0BB93B40A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DE64AA8-D0B1-4899-A9A0-F7E0BB93B40A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DE64AA8-D0B1-4899-A9A0-F7E0BB93B40A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
