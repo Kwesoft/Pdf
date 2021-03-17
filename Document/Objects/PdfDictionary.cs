@@ -18,6 +18,11 @@ namespace Kwesoft.Pdf.Document.Objects
 			Value = value;
 		}
 
+		public static implicit operator PdfDictionary(Dictionary<PdfName, PdfObject> value)
+		{
+			return new PdfDictionary(value);
+		}
+
 		public PdfObject this[PdfName key] => Value[key];
 		public int Count => Value.Count;
 		public bool ContainsKey(PdfName key) => Value.ContainsKey(key);

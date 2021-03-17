@@ -20,6 +20,16 @@ namespace Kwesoft.Pdf.Document.Objects
 			Value = value;
 		}
 
+		public static implicit operator PdfArray(List<PdfObject> value)
+		{
+			return new PdfArray(value);
+		}
+
+		public static implicit operator PdfArray(PdfObject[] value)
+		{
+			return new PdfArray(value.ToList());
+		}
+
 		public override string ToString()
 		{
 			var values = string.Join(PdfKeywords.Space, Value.Select(v => v.ToString()));

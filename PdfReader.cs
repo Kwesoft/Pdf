@@ -12,7 +12,7 @@ namespace Kwesoft.Pdf
 	internal class PdfReader : IPdfReader
 	{
 		private readonly IEditablePdfDocument _document;
-		
+
 		public PdfReader(IEditablePdfDocument document)
 		{
 			_document = document;
@@ -30,7 +30,77 @@ namespace Kwesoft.Pdf
 						Version = 1.4M
 					};
 			}
-			throw new Exception("Invalid _document");
+			throw new Exception("Invalid document");
+		}
+
+		public static byte[] _NumericStringToByteArray(String hex, int fromBase)
+		{
+			int NumberChars = hex.Length;
+			byte[] bytes = new byte[NumberChars / 2];
+			for (int i = 0; i < NumberChars; i += 2)
+				bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), fromBase);
+			return bytes;
+		}
+
+		private string _ReadSanitisedName(string input)
+		{
+			var output = "";
+			var i = 0;
+
+			while(i < input.Length)
+			{
+				if(input[i] == '#')
+				{
+					output = $"{output}{(char)Convert.ToByte(input.Substring(i + 1, 2), 16)}";
+					i += 3;
+				}
+				else if(input[i] == '/')
+				{
+					output = $"{output}{input[i + 1]}";
+					i += 2;
+				}
+				else
+				{
+					var e1 = input.IndexOf('#', i);
+					var e2 = input.IndexOf('/', i);
+					e1 = e1 == -1 ? input.Length : e1;
+					e2 = e2 == -1 ? input.Length : e2;
+					var e = e1 < e2 ? e1 : e2;
+					output = $"{output}{input.Substring(i, (e - i) - 1)}";
+					i = e;
+				}
+			}
+
+			return new string(output.ToArray());
+		}
+		private string _ReadSanitisedString(string input)
+		{
+			var output = "";
+			var i = 0;
+
+			while (i < input.Length)
+			{
+				if (input[i] == '\\')
+				{
+					output = $"{output}{_document.Encoding.GetString(_NumericStringToByteArray(input.Substring(i + 1, 3), 8))}";
+					i += 4;
+				}
+				else
+				{
+					var e = input.IndexOf('\\', i);
+					e = e == -1 ? input.Length : e;
+					output = $"{output}{input.Substring(i, (e - i) - 1)}";
+					i = e;
+				}
+			}
+
+			return new string(output.ToArray());
+		}
+		private string _ReadHexSanitisedString(string input)
+		{
+			if (input.Substring(0, 4).ToUpper() == "FFFE")
+				return Encoding.BigEndianUnicode.GetString(_NumericStringToByteArray(input.Substring(4, input.Length - 4), 16));
+			return _document.Encoding.GetString(_NumericStringToByteArray(input, 16));
 		}
 
 		private PdfName _ReadName(int index, PdfObject parent)
@@ -38,7 +108,7 @@ namespace Kwesoft.Pdf
 			var end = _Find(1, b => _Equal(b, _document.Keywords.Space) || _Equal(b, _document.Keywords.ArrayEnd) || _Equal(b, _document.Keywords.DictionaryEnd) || _Equal(b, _document.Keywords.LineBreak), _document, index + 1);
 			return new PdfName
 			{
-				Value = _document.Encoding.GetString(_document.Read(index + 1, end - (index + 1))),
+				Value = _ReadSanitisedName(_document.Encoding.GetString(_document.Read(index + 1, end - (index + 1)))),
 				Offset = _GetOffset(index, parent),
 				Length = end - index,
 				Parent = parent,
@@ -70,18 +140,21 @@ namespace Kwesoft.Pdf
 			return result;
 		}
 
-		private PdfString _ReadString(int index, PdfObject parent)
+		private PdfString _ReadString(int index, PdfObject parent, Func<string,string> readValue)
 		{
 			var length = _Find(_document.Keywords.StringEnd, _document, index) - index;
 			return new PdfString
 			{
 				Offset = _GetOffset(index, parent),
 				Length = length + 1,
-				Value = _document.Encoding.GetString(_document.Read(index + 1, length - 1)),
+				Value = readValue(_document.Encoding.GetString(_document.Read(index + 1, length - 1))),
 				Parent = parent,
 				Document = _document
 			};
 		}
+
+		private PdfString _ReadString(int index, PdfObject parent) => _ReadString(index, parent, _ReadSanitisedString);
+		private PdfString _ReadHexString(int index, PdfObject parent) => _ReadString(index, parent, _ReadHexSanitisedString);
 
 		private PdfDouble _ReadDouble(int index, int length, PdfObject parent)
 		{
@@ -154,6 +227,7 @@ namespace Kwesoft.Pdf
 			if (_Equal(_document, index, _document.Keywords.Null)) return new PdfNull { Offset = _GetOffset(index, parent), Length = _document.Keywords.Null.Length, Parent = parent };
 			if (_Equal(_document, index, _document.Keywords.DictionaryStart)) return _ReadDictionary(index, parent);
 			if (_Equal(_document, index, _document.Keywords.StringStart)) return _ReadString(index, parent);
+			if (_Equal(_document, index, _document.Keywords.HexStringStart)) return _ReadHexString(index, parent);
 			if (_Equal(_document, index, _document.Keywords.ArrayStart)) return _ReadArray(index, parent);
 			if (_Equal(_document, index, _document.Keywords.NameStart)) return _ReadName(index, parent);
 

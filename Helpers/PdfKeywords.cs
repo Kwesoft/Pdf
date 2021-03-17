@@ -22,6 +22,8 @@
 		public static string NameStart { get; } = "/";
 		public static string StringStart { get; } = "(";
 		public static string StringEnd { get; } = ")";
+		public static string HexStringStart { get; } = "<";
+		public static string HexStringEnd { get; } = ">";
 		public static string LineBreak { get; } = "\n";
 		public static string Space { get; } = " ";
 		public static string Decimal { get; } = ".";

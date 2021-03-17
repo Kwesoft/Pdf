@@ -25,6 +25,8 @@ namespace Kwesoft.Pdf.Helpers
 		public byte[] NameStart { get; }
 		public byte[] StringStart { get; }
 		public byte[] StringEnd { get; }
+		public byte[] HexStringStart { get; }
+		public byte[] HexStringEnd { get; }
 		public byte[] LineBreak { get; }
 		public byte[] Space { get; }
 		public byte[] Decimal { get; }
@@ -57,6 +59,8 @@ namespace Kwesoft.Pdf.Helpers
 			NameStart = encoding.GetBytes(PdfKeywords.NameStart);
 			StringStart = encoding.GetBytes(PdfKeywords.StringStart);
 			StringEnd = encoding.GetBytes(PdfKeywords.StringEnd);
+			HexStringStart = encoding.GetBytes(PdfKeywords.HexStringStart);
+			HexStringEnd = encoding.GetBytes(PdfKeywords.HexStringEnd);
 			LineBreak = encoding.GetBytes(PdfKeywords.LineBreak);
 			Space = encoding.GetBytes(PdfKeywords.Space);
 			Decimal = encoding.GetBytes(PdfKeywords.Decimal);

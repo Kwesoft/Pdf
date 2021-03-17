@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Kwesoft.Pdf.Document.Objects
 {
@@ -52,6 +54,61 @@ namespace Kwesoft.Pdf.Document.Objects
 
 		internal virtual byte[] GetBytes(Encoding encoding) {
 			return encoding.GetBytes(ToString());
+		}
+
+		public static implicit operator PdfObject(bool value)
+		{
+			return new PdfBool { Value = value };
+		}
+
+		public static implicit operator PdfObject(byte value)
+		{
+			return new PdfInteger { Value = value };
+		}
+
+		public static implicit operator PdfObject(int value)
+		{
+			return new PdfInteger { Value = value };
+		}
+
+		public static implicit operator PdfObject(long value)
+		{
+			return new PdfInteger { Value = value };
+		}
+
+		public static implicit operator PdfObject(float value)
+		{
+			return new PdfDouble { Value = value };
+		}
+
+		public static implicit operator PdfObject(double value)
+		{
+			return new PdfDouble { Value = value };
+		}
+
+		public static implicit operator PdfObject(decimal value)
+		{
+			return new PdfDouble { Value = (double)value };
+		}
+
+		public static implicit operator PdfObject(string value)
+		{
+			return new PdfString { Value = value };
+		}
+
+		public static implicit operator PdfObject(PdfObject[] value)
+		{
+			return new PdfArray(value.ToList());
+		}
+
+		public static implicit operator PdfObject(List<PdfObject> value)
+		{
+			return new PdfArray(value);
+		}
+
+		public static implicit operator PdfObject(Dictionary<PdfName, PdfObject> value)
+		{
+			return new PdfDictionary(value);
 		}
 	}
 }
