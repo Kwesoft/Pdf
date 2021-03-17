@@ -1,7 +1,4 @@
-﻿using Kwesoft.Pdf.Document.Objects;
-using Kwesoft.Pdf.Document.Objects.Structural;
-
-namespace Kwesoft.Pdf.Document
+﻿namespace Kwesoft.Pdf
 {
 	public interface IPdfDocument
 	{

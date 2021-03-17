@@ -1,10 +1,8 @@
-﻿using Kwesoft.Pdf.Document.Objects;
-using Kwesoft.Pdf.Document.Objects.Structural;
-using Kwesoft.Pdf.Helpers;
+﻿using Kwesoft.Pdf.Helpers;
 using System;
 using System.Text;
 
-namespace Kwesoft.Pdf.Document
+namespace Kwesoft.Pdf
 {
 	internal interface IEditablePdfDocument : IPdfDocument
 	{

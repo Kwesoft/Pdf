@@ -1,8 +1,8 @@
 ﻿using Kwesoft.Pdf.Helpers;
 
-namespace Kwesoft.Pdf.Document.Objects.Structural
+namespace Kwesoft.Pdf
 {
-	class PdfTrailer : PdfObject
+	internal class PdfTrailer : PdfObject
 	{
 		public PdfDictionary TrailerDictionary { get; set; }
 		public int CrossReferenceTableOffset { get; set; }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Kwesoft.Pdf.Document.Objects.Structural
+namespace Kwesoft.Pdf
 {
 	internal class PdfCrossReferenceTable : PdfObject
 	{

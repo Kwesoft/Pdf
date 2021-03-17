@@ -1,4 +1,4 @@
-﻿namespace Kwesoft.Pdf.Document.Objects
+﻿namespace Kwesoft.Pdf
 {
 	public class PdfDouble : PdfObject<double>
 	{

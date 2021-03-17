@@ -1,4 +1,4 @@
-﻿namespace Kwesoft.Pdf.Document.Objects.Structural
+﻿namespace Kwesoft.Pdf
 {
 	public class PdfHeader
 	{

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Kwesoft.Pdf.Document.Objects
+namespace Kwesoft.Pdf
 {
 	public class PdfArray : PdfObject, IEnumerable<PdfObject>
 	{

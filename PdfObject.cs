@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace Kwesoft.Pdf.Document.Objects
+namespace Kwesoft.Pdf
 {
 	public abstract class PdfObject<T> : PdfObject
 	{

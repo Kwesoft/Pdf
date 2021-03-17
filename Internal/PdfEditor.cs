@@ -1,6 +1,4 @@
-﻿using Kwesoft.Pdf.Document;
-using Kwesoft.Pdf.Document.Objects;
-using Kwesoft.Pdf.Helpers;
+﻿using Kwesoft.Pdf.Helpers;
 using System;
 using System.IO;
 using System.Linq;

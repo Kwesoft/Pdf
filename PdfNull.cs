@@ -1,6 +1,6 @@
 ﻿using Kwesoft.Pdf.Helpers;
 
-namespace Kwesoft.Pdf.Document.Objects
+namespace Kwesoft.Pdf
 {
 	public class PdfNull : PdfObject
 	{

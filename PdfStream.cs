@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace Kwesoft.Pdf.Document.Objects
+namespace Kwesoft.Pdf
 {
 	public class PdfStream : PdfObject
 	{

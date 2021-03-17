@@ -1,7 +1,7 @@
 ﻿using Kwesoft.Pdf.Helpers;
 using System.Linq;
 
-namespace Kwesoft.Pdf.Document.Objects
+namespace Kwesoft.Pdf
 {
 	public class PdfString : PdfObject<string>
 	{ 
