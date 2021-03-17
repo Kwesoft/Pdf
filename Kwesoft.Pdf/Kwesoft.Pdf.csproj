@@ -6,7 +6,7 @@
     <ApplicationIcon />
     <StartupObject />
     <RootNamespace>Kwesoft.Pdf</RootNamespace>
-    <AssemblyName>Pdf</AssemblyName>
+    <AssemblyName>Kwesoft.Pdf</AssemblyName>
     <Authors>Kwesoft</Authors>
     <PackageId>Kwesoft.Pdf</PackageId>
     <Company />
@@ -20,5 +20,14 @@
   <ItemGroup>
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.7.0" />
   </ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Kwesoft.Pdf.UnitTests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 
 </Project>

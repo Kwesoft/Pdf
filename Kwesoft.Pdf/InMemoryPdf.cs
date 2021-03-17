@@ -28,11 +28,11 @@ namespace Kwesoft.Pdf
 
 		private IPdfEditor _editor { get; }
 
-		public InMemoryPdf(byte[] data) : this(data, null) 
+		public InMemoryPdf(byte[] data) : this(data, null, null) 
 		{
 		}
 
-		internal InMemoryPdf(byte[] data, IPdfReader reader)
+		internal InMemoryPdf(byte[] data, IPdfReader reader, IPdfEditor editor)
 		{
 			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 			_encoding = Encoding.GetEncoding(1252);
@@ -40,18 +40,15 @@ namespace Kwesoft.Pdf
 
 			_data = data;
 			_reader = reader ?? new PdfReader(this);
+			_editor = editor ?? new PdfEditor(this);
 			_length = data.Length;
 			Header = _reader.ReadHeader();
 			_trailer = _reader.ReadTrailer();
 			_crossReferenceTable = _reader.ReadCrossReferenceTable(_trailer);
 			
-			Root = (PdfDictionary)_reader.ReadObject((PdfIndirectReference)_trailer.TrailerDictionary.Value["Root"]);
-			Info = (PdfDictionary)_reader.ReadObject((PdfIndirectReference)_trailer.TrailerDictionary.Value["Info"]);
-
-			_editor = new PdfEditor(this);
+			Root = (PdfDictionary)_reader.ReadObject(_trailer.Root);
+			Info = (PdfDictionary)_reader.ReadObject(_trailer.Info);
 		}
-
-		PdfObject IEditablePdfDocument.ReadObject(PdfIndirectReference reference) => _reader.ReadObject(reference);
 
 		byte IEditablePdfDocument.Read(int index) => _data[index];
 
@@ -80,6 +77,7 @@ namespace Kwesoft.Pdf
 			return (byte[])_data.Clone();
 		}
 
+		PdfObject IEditablePdfDocument.ReadObject(PdfIndirectReference reference) => _reader.ReadObject(reference);
 		void IEditablePdfDocument.Add(PdfDictionary dictionary, PdfName key, PdfObject value) => _editor.Add(dictionary, key, value);
 		void IEditablePdfDocument.Remove(PdfDictionary dictionary, PdfName key) => _editor.Remove(dictionary, key);
 

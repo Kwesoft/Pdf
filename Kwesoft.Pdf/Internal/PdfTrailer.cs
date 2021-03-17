@@ -4,8 +4,11 @@ namespace Kwesoft.Pdf
 {
 	internal class PdfTrailer : PdfObject
 	{
-		public PdfDictionary TrailerDictionary { get; set; }
-		public int CrossReferenceTableOffset { get; set; }
+		internal PdfDictionary TrailerDictionary { get; set; }
+		internal int CrossReferenceTableOffset { get; set; }
+
+		internal PdfIndirectReference Root =>  (PdfIndirectReference)TrailerDictionary.Value["Root"];
+		internal PdfIndirectReference Info => (PdfIndirectReference)TrailerDictionary.Value["Info"];
 
 		public override string ToString()
 		{
