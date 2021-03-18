@@ -4,7 +4,7 @@
 	{
 		PdfDictionary Root { get; }
 		PdfDictionary Info { get; }
-		PdfHeader Header { get; }
+		decimal Version { get; }
 		void Save(string filename);
 		byte[] GetBytes();
 		PdfIndirectReference Add(PdfObject obj);

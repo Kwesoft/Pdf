@@ -14,17 +14,14 @@ namespace Kwesoft.Pdf
 			_document = document;
 		}
 
-		public PdfHeader ReadHeader()
+		public decimal ReadVersion()
 		{
 			var content = _document.Encoding.GetString(_document.Read(0, _document.Find(2, window => window[0] == 10 && window[1] != 37)));
 
 			switch (content.Split('\n')[0])
 			{
 				case "%PDF-1.4":
-					return new PdfHeader
-					{
-						Version = 1.4M
-					};
+					return 1.4M;
 			}
 			throw new Exception("Invalid document");
 		}

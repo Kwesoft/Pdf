@@ -11,7 +11,7 @@ namespace Kwesoft.Pdf
 		private readonly IPdfReader _reader;
 		public PdfDictionary Root { get; }
 		public PdfDictionary Info { get; }
-		public PdfHeader Header { get; }
+		public decimal Version { get; }
 
 		private readonly PdfCrossReferenceTable _crossReferenceTable;
 		PdfCrossReferenceTable IEditablePdfDocument.CrossReferenceTable => _crossReferenceTable;
@@ -42,7 +42,7 @@ namespace Kwesoft.Pdf
 			_reader = reader ?? new PdfReader(this);
 			_editor = editor ?? new PdfEditor(this);
 			_length = data.Length;
-			Header = _reader.ReadHeader();
+			Version = _reader.ReadVersion();
 			_trailer = _reader.ReadTrailer();
 			_crossReferenceTable = _reader.ReadCrossReferenceTable(_trailer);
 			

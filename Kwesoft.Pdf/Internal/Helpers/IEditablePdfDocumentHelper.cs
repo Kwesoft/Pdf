@@ -18,7 +18,7 @@ namespace Kwesoft.Pdf.Helpers
 
 			var pos = start;
 			var window = new byte[windowSize];
-			while (pos != end)
+			while (pos <= end)
 			{
 				window.Insert(document.Read(pos));
 				if (matches(window)) return pos;

@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Kwesoft.Pdf.UnitTests.Helpers;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ namespace Kwesoft.Pdf.UnitTests
 		private Mock<IPdfEditor> _editor;
 		private byte[] _data;
 
-		private PdfHeader _header;
 		private PdfTrailer _trailer;
 
 		private Mock<PdfIndirectReference> _rootRef;
@@ -35,7 +35,6 @@ namespace Kwesoft.Pdf.UnitTests
 			_root = new Mock<PdfDictionary>();
 			_info = new Mock<PdfDictionary>();
 
-			_header = new PdfHeader();
 			_trailer = new PdfTrailer
 			{
 				TrailerDictionary = new Dictionary<PdfName, PdfObject> {
@@ -44,20 +43,13 @@ namespace Kwesoft.Pdf.UnitTests
 				}
 			};
 
-			_reader.Setup(x => x.ReadHeader()).Returns(_header);
+			_reader.Setup(x => x.ReadVersion()).Returns(1.4M);
 			_reader.Setup(x => x.ReadTrailer()).Returns(_trailer);
 
 			_reader.Setup(x => x.ReadObject(_rootRef.Object)).Returns(_root.Object);
 			_reader.Setup(x => x.ReadObject(_infoRef.Object)).Returns(_info.Object);
 
 			_inMemoryPdf = new InMemoryPdf(_data, _reader.Object, _editor.Object);
-		}
-
-		private void AssertArrayEqual<T>(T[] expected, T[] actual)
-		{
-			Assert.AreEqual(expected.Length, actual.Length);
-			for (var i = 0; i < expected.Length; i++)
-				Assert.AreEqual(expected[i], actual[i]);
 		}
 
 		[Test]
@@ -71,14 +63,14 @@ namespace Kwesoft.Pdf.UnitTests
 		public void ReadManyBytes()
 		{
 			var result = (_inMemoryPdf as IEditablePdfDocument).Read(2, 3);
-			AssertArrayEqual(new byte[] { 2, 3, 4 }, result);
+			new byte[] { 2, 3, 4 }.AssertArrayEqual(result);
 		}
 
 		[Test]
 		public void ReadAllBytes()
 		{
 			var result = _inMemoryPdf.GetBytes();
-			AssertArrayEqual(new byte[] { 0, 1, 2, 3, 4, 5 }, result);
+			new byte[] { 0, 1, 2, 3, 4, 5 }.AssertArrayEqual(result);
 		}
 
 		[Test]
@@ -86,7 +78,7 @@ namespace Kwesoft.Pdf.UnitTests
 		{
 			_inMemoryPdf.Replace(2, 3, new byte[] { 11 });
 			var result = _inMemoryPdf.GetBytes();
-			AssertArrayEqual(new byte[] { 0, 1, 11, 5 }, result);
+			new byte[] { 0, 1, 11, 5 }.AssertArrayEqual(result);
 		}
 
 		[Test]

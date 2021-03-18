@@ -27,7 +27,7 @@ namespace Kwesoft.Pdf
 		private string _Sanitise(string input)
 		{
 			return new string(input.SelectMany(c => {
-				if (c < 0x21 || c > 0x7e || c == '%' || c == '(' || c == ')' || c == '<' || c == '>' || c == '[' || c == ']' || c == '{' || c == '}' || c == '/' || c == '#')
+				if (c < 0x21 || c > 0x7e || c == '%' || c == '(' || c == ')' || c == '<' || c == '>' || c == '[' || c == ']' || c == '{' || c == '}' || c == '/' || c == '\\' || c == '#')
 					return $"#{((int)c).ToString("X").PadLeft(2, '0')}";
 				return $"{c}";
 			}).ToArray());
