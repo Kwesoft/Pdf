@@ -12,8 +12,8 @@
 		public static string StartXRefLine { get; } = "\nstartxref\n";
 		public static string Trailer { get; } = "trailer";
 		public static string TrailerLine { get; } = "\ntrailer\n";
-		public static string True { get; } = "True";
-		public static string False { get; } = "False";
+		public static string True { get; } = "true";
+		public static string False { get; } = "false";
 		public static string Null { get; } = "null";
 		public static string DictionaryStart { get; } = "<<";
 		public static string DictionaryEnd { get; } = ">>";
