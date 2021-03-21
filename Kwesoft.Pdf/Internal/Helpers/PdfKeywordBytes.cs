@@ -25,6 +25,7 @@ namespace Kwesoft.Pdf.Helpers
 		public byte[] NameStart { get; }
 		public byte[] StringStart { get; }
 		public byte[] StringEnd { get; }
+		public byte[] BackSlash { get; }
 		public byte[] HexStringStart { get; }
 		public byte[] HexStringEnd { get; }
 		public byte[] LineBreak { get; }
@@ -36,6 +37,7 @@ namespace Kwesoft.Pdf.Helpers
 		public byte[] StreamStartLine { get; }
 		public byte[] StreamEnd { get; }
 		public byte[] StreamEndLines { get; }
+		public byte[] BigEndianUnicodeMarker { get; }
 
 		public PdfKeywordBytes(Encoding encoding)
 		{
@@ -70,6 +72,8 @@ namespace Kwesoft.Pdf.Helpers
 			StreamStartLine = encoding.GetBytes(PdfKeywords.StreamStartLine);
 			StreamEnd = encoding.GetBytes(PdfKeywords.StreamEnd);
 			StreamEndLines = encoding.GetBytes(PdfKeywords.StreamEndLines);
+			BackSlash = encoding.GetBytes(PdfKeywords.BackSlash);
+			BigEndianUnicodeMarker = encoding.GetBytes(PdfKeywords.BigEndianUnicodeMarker);
 		}
 	}
 }

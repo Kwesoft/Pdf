@@ -22,16 +22,18 @@
 		public static string NameStart { get; } = "/";
 		public static string StringStart { get; } = "(";
 		public static string StringEnd { get; } = ")";
+		public static string BackSlash { get; } = "\\";
 		public static string HexStringStart { get; } = "<";
 		public static string HexStringEnd { get; } = ">";
 		public static string LineBreak { get; } = "\n";
 		public static string Space { get; } = " ";
 		public static string Decimal { get; } = ".";
 		public static string Reference { get; } = "R";
-		public static string Numbers { get; } = "01234567890";
+		public static string Numbers { get; } = "0123456789";
 		public static string StreamStart { get; } = "stream";
 		public static string StreamStartLine { get; } = "stream\n";
 		public static string StreamEnd { get; } = "endstream";
 		public static string StreamEndLines { get; } = "\nendstream\nendobj\n";
+		public static string BigEndianUnicodeMarker { get; } = "FFFE";
 	}
 }
