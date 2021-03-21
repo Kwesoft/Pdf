@@ -12,6 +12,17 @@ namespace Kwesoft.Pdf
 			return new PdfString { Value = value };
 		}
 
+
+		public override bool Equals(object obj)
+		{
+			return obj is PdfString other && other.Value == Value;
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
+		}
+
 		private string _Sanitise(string input)
 		{
 			return new string(input.SelectMany(c => {

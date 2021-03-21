@@ -59,7 +59,7 @@ namespace Kwesoft.Pdf.UnitTests
 			Buffer.BlockCopy(data, 0, expected, prefixBytes.Length, data.Length);
 			Buffer.BlockCopy(suffixBytes, 0, expected, prefixBytes.Length + data.Length, suffixBytes.Length);
 
-			expected.AssertArrayEqual(stream.GetBytes(Encoding.UTF8));
+			expected.AssertAllEqual(stream.GetBytes(Encoding.UTF8));
 		}
 	}
 }

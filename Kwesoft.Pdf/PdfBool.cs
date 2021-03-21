@@ -8,5 +8,15 @@
 		{
 			return new PdfBool { Value = value };
 		}
+
+		public override bool Equals(object obj)
+		{
+			return obj is PdfBool other && other.Value == Value;
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
+		}
 	}
 }

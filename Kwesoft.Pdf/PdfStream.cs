@@ -51,5 +51,16 @@ namespace Kwesoft.Pdf
 
 			return bytes;
 		}
+
+
+		public override bool Equals(object obj)
+		{
+			return obj is PdfStream other && ((_properties != null && _properties.Equals(other._properties)) || (_properties == null && other._properties == null)) && ((Data != null && Data.Equals(other.Data)) || (Data == null && other.Data == null));
+		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(Data, _properties);
+		}
 	}
 }

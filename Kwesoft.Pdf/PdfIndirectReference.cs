@@ -1,4 +1,5 @@
 ﻿using Kwesoft.Pdf.Helpers;
+using System;
 
 namespace Kwesoft.Pdf
 {
@@ -6,6 +7,17 @@ namespace Kwesoft.Pdf
 	{
 		public int ObjectNumber { get; internal set; }
 		public int GenerationNumber { get; internal set; }
+
+
+		public override bool Equals(object obj)
+		{
+			return obj is PdfIndirectReference other && other.ObjectNumber == ObjectNumber && other.GenerationNumber == GenerationNumber;
+		}
+
+		public override int GetHashCode()
+		{
+			return HashCode.Combine(ObjectNumber, GenerationNumber);
+		}
 
 		public override string ToString()
 		{

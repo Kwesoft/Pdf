@@ -33,7 +33,7 @@
 		public static string StreamStart { get; } = "stream";
 		public static string StreamStartLine { get; } = "stream\n";
 		public static string StreamEnd { get; } = "endstream";
-		public static string StreamEndLines { get; } = "\nendstream\nendobj\n";
+		public static string StreamEndLines { get; } = "\nendstream\n";
 		public static string BigEndianUnicodeMarker { get; } = "FFFE";
 	}
 }

@@ -4,6 +4,17 @@
 	{
 		public override string ToString() => $"{Value}";
 
+
+		public override bool Equals(object obj)
+		{
+			return obj is PdfDouble other && other.Value == Value;
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
+		}
+
 		public static implicit operator PdfDouble(byte value)
 		{
 			return new PdfDouble { Value = value };

@@ -63,14 +63,14 @@ namespace Kwesoft.Pdf.UnitTests
 		public void ReadManyBytes()
 		{
 			var result = (_inMemoryPdf as IEditablePdfDocument).Read(2, 3);
-			new byte[] { 2, 3, 4 }.AssertArrayEqual(result);
+			new byte[] { 2, 3, 4 }.AssertAllEqual(result);
 		}
 
 		[Test]
 		public void ReadAllBytes()
 		{
 			var result = _inMemoryPdf.GetBytes();
-			new byte[] { 0, 1, 2, 3, 4, 5 }.AssertArrayEqual(result);
+			new byte[] { 0, 1, 2, 3, 4, 5 }.AssertAllEqual(result);
 		}
 
 		[Test]
@@ -78,7 +78,7 @@ namespace Kwesoft.Pdf.UnitTests
 		{
 			_inMemoryPdf.Replace(2, 3, new byte[] { 11 });
 			var result = _inMemoryPdf.GetBytes();
-			new byte[] { 0, 1, 11, 5 }.AssertArrayEqual(result);
+			new byte[] { 0, 1, 11, 5 }.AssertAllEqual(result);
 		}
 
 		[Test]

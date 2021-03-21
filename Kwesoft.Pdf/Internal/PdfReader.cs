@@ -39,10 +39,11 @@ namespace Kwesoft.Pdf
 				Properties = (PdfDictionary)result,
 				Offset = index,
 				Length = end - index,
-				Data = _document.Read(streamStart, end - _document.Keywords.StreamEndLines.Length - streamStart),
+				Data = _document.Read(streamStart + 1, end - _document.Keywords.StreamEndLines.Length - streamStart),
 				Document = _document
 			};
 			result.Parent = stream;
+			result.Offset = 0;
 			return stream;
 		}
 
@@ -96,9 +97,21 @@ namespace Kwesoft.Pdf
 
 		private PdfObject _ReadObject(int index, PdfObject parent)
 		{
-			if (_document.ByteEquals(index, _document.Keywords.True)) return new PdfBool { Value = true, Offset = index - (parent?.Index ?? 0), Length = _document.Keywords.True.Length, Parent = parent };
-			if (_document.ByteEquals(index, _document.Keywords.False)) return new PdfBool { Value = false, Offset = index - (parent?.Index ?? 0), Length = _document.Keywords.False.Length, Parent = parent };
-			if (_document.ByteEquals(index, _document.Keywords.Null)) return new PdfNull { Offset = index - (parent?.Index ?? 0), Length = _document.Keywords.Null.Length, Parent = parent };
+			if(_document.Length >= index + 4)
+			{
+				var raw = _document.Encoding.GetString(_document.Read(index, 4));
+				if(string.Equals(PdfKeywords.True, raw,StringComparison.InvariantCultureIgnoreCase))
+					return new PdfBool { Value = true, Offset = index - (parent?.Index ?? 0), Length = _document.Keywords.True.Length, Parent = parent };
+				if (string.Equals(PdfKeywords.Null, raw, StringComparison.InvariantCultureIgnoreCase))
+					return new PdfNull { Offset = index - (parent?.Index ?? 0), Length = _document.Keywords.Null.Length, Parent = parent };
+				if (_document.Length >= index + 5)
+				{
+					raw =  $"{raw}{_document.Encoding.GetString(_document.Read(index + 4, 1))}";
+					if(string.Equals(PdfKeywords.False, raw, StringComparison.InvariantCultureIgnoreCase))
+						return new PdfBool { Value = false, Offset = index - (parent?.Index ?? 0), Length = _document.Keywords.False.Length, Parent = parent };
+				}
+			}
+			
 			if (_document.ByteEquals(index, _document.Keywords.DictionaryStart)) return _ReadDictionary(index, parent);
 			if (_document.ByteEquals(index, _document.Keywords.StringStart)) return _ReadString(index, parent);
 			if (_document.ByteEquals(index, _document.Keywords.HexStringStart)) return _ReadHexString(index, parent);
@@ -158,7 +171,7 @@ namespace Kwesoft.Pdf
 					pos++;
 			}
 
-			result.Length = pos - index;
+			result.Length = pos - index + 1;
 			return result;
 		}
 
@@ -224,7 +237,7 @@ namespace Kwesoft.Pdf
 		{
 			return new PdfInteger
 			{
-				Value = int.Parse(_document.Encoding.GetString(_document.Read(index, length))),
+				Value = long.Parse(_document.Encoding.GetString(_document.Read(index, length))),
 				Offset = index - (parent?.Index ?? 0),
 				Length = length,
 				Parent = parent,
@@ -256,7 +269,7 @@ namespace Kwesoft.Pdf
 					e1 = e1 == -1 ? input.Length : e1;
 					e2 = e2 == -1 ? input.Length : e2;
 					var e = e1 < e2 ? e1 : e2;
-					output = $"{output}{input.Substring(i, (e - i) - 1)}";
+					output = $"{output}{input.Substring(i, e - i)}";
 					i = e;
 				}
 			}
@@ -270,7 +283,7 @@ namespace Kwesoft.Pdf
 			var end = _document.Find(1, b => b.ByteEquals(_document.Keywords.Space) || b.ByteEquals(_document.Keywords.ArrayEnd) || b.ByteEquals(_document.Keywords.DictionaryEnd) || b.ByteEquals(_document.Keywords.LineBreak), index + 1);
 			return new PdfName
 			{
-				Value = _ReadSanitisedName(_document.Encoding.GetString(_document.Read(index + 1, end - (index + 1)))),
+				Value = _ReadSanitisedName(_document.Encoding.GetString(_document.Read(index + 1, end - index - 1))),
 				Offset = index - (parent?.Index ?? 0),
 				Length = end - index,
 				Parent = parent,
@@ -359,11 +372,6 @@ namespace Kwesoft.Pdf
 		private bool _IsNumeric(byte s)
 		{
 			return _document.Keywords.Numbers.Contains(s);
-		}
-
-		private bool _IsNumeric(char s)
-		{
-			return PdfKeywords.Numbers.Contains(s);
 		}
 	}
 }

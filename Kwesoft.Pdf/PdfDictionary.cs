@@ -18,6 +18,16 @@ namespace Kwesoft.Pdf
 			Value = value;
 		}
 
+		public override bool Equals(object obj)
+		{
+			return obj is PdfDictionary other && ((Value != null && Value.Equals(other.Value)) || (Value == null && other.Value == null));
+		}
+
+		public override int GetHashCode()
+		{
+			return Value.GetHashCode();
+		}
+
 		public static implicit operator PdfDictionary(Dictionary<PdfName, PdfObject> value)
 		{
 			return new PdfDictionary(value);

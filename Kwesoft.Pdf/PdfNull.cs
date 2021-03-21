@@ -8,5 +8,16 @@ namespace Kwesoft.Pdf
 		{
 			return PdfKeywords.Null;
 		}
+
+
+		public override bool Equals(object obj)
+		{
+			return obj is PdfNull other;
+		}
+
+		public override int GetHashCode()
+		{
+			return 0;
+		}
 	}
 }
