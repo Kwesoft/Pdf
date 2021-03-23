@@ -1,6 +1,7 @@
 ﻿using Kwesoft.Pdf.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Kwesoft.Pdf
 {
@@ -48,6 +49,23 @@ namespace Kwesoft.Pdf
 		{
 			var values = _GetValues();
 			return $"{PdfKeywords.DictionaryStart}{values}{PdfKeywords.DictionaryEnd}";
+		}
+
+		internal override byte[] GetBytes(Encoding encoding)
+		{
+			var result = new List<byte[]>(Value.Count * 4 + 1);
+			result.Add(encoding.GetBytes(PdfKeywords.DictionaryStart));
+			var first = true;
+			foreach(var value in Value)
+			{
+				if(!first) result.Add(encoding.GetBytes(PdfKeywords.LineBreak));
+				result.Add(value.Key.GetBytes(encoding));
+				result.Add(encoding.GetBytes(PdfKeywords.Space));
+				result.Add(value.Value.GetBytes(encoding));
+				first = false;
+			}
+			result.Add(encoding.GetBytes(PdfKeywords.DictionaryEnd));
+			return result.SelectMany(x => x).ToArray();
 		}
 
 		protected override void _DocumentAssigned()

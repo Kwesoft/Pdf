@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Kwesoft.Pdf
 {
@@ -44,6 +45,21 @@ namespace Kwesoft.Pdf
 		{
 			var values = string.Join(PdfKeywords.Space, Value.Select(v => v.ToString()));
 			return $"{PdfKeywords.ArrayStart}{values}{PdfKeywords.ArrayEnd}";
+		}
+
+		internal override byte[] GetBytes(Encoding encoding)
+		{
+			var result = new List<byte[]>(Value.Count * 2 + 1);
+			result.Add(encoding.GetBytes(PdfKeywords.ArrayStart));
+			var first = true;
+			foreach (var value in Value)
+			{
+				if (!first) result.Add(encoding.GetBytes(PdfKeywords.Space));
+				result.Add(value.GetBytes(encoding));
+				first = false;
+			}
+			result.Add(encoding.GetBytes(PdfKeywords.ArrayEnd));
+			return result.SelectMany(x => x).ToArray();
 		}
 
 		protected override void _DocumentAssigned()

@@ -1,5 +1,7 @@
 ﻿using Kwesoft.Pdf.Helpers;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Kwesoft.Pdf
@@ -40,16 +42,13 @@ namespace Kwesoft.Pdf
 
 		internal override byte[] GetBytes(Encoding encoding)
 		{
-			var prefix = encoding.GetBytes(_GetPrefix());
-			var suffix = encoding.GetBytes(_GetSuffix());
+			var result = new List<byte[]> {
+				encoding.GetBytes(_GetPrefix()),
+				Data,
+				encoding.GetBytes(_GetSuffix())
+			};
 
-			var bytes = new byte[prefix.Length + Data.Length + suffix.Length];
-
-			Buffer.BlockCopy(prefix, 0, bytes, 0, prefix.Length);
-			Buffer.BlockCopy(Data, 0, bytes, prefix.Length, Data.Length);
-			Buffer.BlockCopy(suffix, 0, bytes, prefix.Length + Data.Length, suffix.Length);
-
-			return bytes;
+			return result.SelectMany(x => x).ToArray();
 		}
 
 

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Kwesoft.Pdf.Helpers
 {
 	internal static class ByteArrayHelper
 	{
-
+		
 		internal static void Insert(this byte[] data, byte newValue)
 		{
 			for (var i = 1; i < data.Length; i++)

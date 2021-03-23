@@ -1,5 +1,6 @@
 ﻿using Kwesoft.Pdf.Helpers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,18 +19,18 @@ namespace Kwesoft.Pdf
 
 		PdfIndirectReference IPdfEditor.Add(PdfObject obj)
 		{
-			var maxObjectNumber = _document.CrossReferenceTable.ObjectOffsets.Max(o => o.Key);
-			var maxIndirectReference = _document.CrossReferenceTable.ObjectOffsets[maxObjectNumber];
+			var maxObjectNumber = _document.CrossReferenceTable.ObjectOffsets.Any() 
+				? _document.CrossReferenceTable.ObjectOffsets.Max(o => o.Key)
+				: -1;
 			var objectNumber = maxObjectNumber + 1;
 
 			var prefix = _document.Encoding.GetBytes($"{objectNumber}{PdfKeywords.Space}0{PdfKeywords.Space}{PdfKeywords.Obj}{PdfKeywords.LineBreak}");
-			var data = obj.GetBytes(_document.Encoding);
-			var suffix = _document.Encoding.GetBytes($"{PdfKeywords.EndObj}{PdfKeywords.LineBreak}");
-			var bytes = new byte[prefix.Length + data.Length + suffix.Length];
 
-			Buffer.BlockCopy(prefix, 0, bytes, 0, prefix.Length);
-			Buffer.BlockCopy(data, 0, bytes, prefix.Length, data.Length);
-			Buffer.BlockCopy(suffix, 0, bytes, prefix.Length + data.Length, suffix.Length);
+			var bytes = new List<byte[]> {
+				prefix,
+				obj.GetBytes(_document.Encoding),
+				_document.Encoding.GetBytes($"{PdfKeywords.LineBreak}{PdfKeywords.EndObj}{PdfKeywords.LineBreak}")
+			}.SelectMany(x => x).ToArray();
 
 			var index = _document.CrossReferenceTable.Index;
 			_document.CrossReferenceTable.ObjectOffsets.Add(objectNumber, index);
@@ -129,7 +130,7 @@ namespace Kwesoft.Pdf
 			var oldIndex = value.Index;
 			var oldLength = value.Length;
 			edit();
-			var newRawValue = _document.Encoding.GetBytes(value.ToString());
+			var newRawValue = value.GetBytes(_document.Encoding);
 			var newLength = newRawValue.Length;
 			_document.Replace(oldIndex, oldLength, newRawValue);
 			_AdjustLength(value, newLength - oldLength, adjustReferences);
