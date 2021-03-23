@@ -12,7 +12,7 @@ namespace Kwesoft.Pdf
 
 		public override bool Equals(object obj)
 		{
-			return obj is PdfNull other;
+			return obj is PdfNull;
 		}
 
 		public override int GetHashCode()

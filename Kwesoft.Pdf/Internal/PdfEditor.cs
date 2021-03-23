@@ -10,7 +10,7 @@ namespace Kwesoft.Pdf
 
 	internal class PdfEditor : IPdfEditor
 	{
-		IEditablePdfDocument _document;
+		readonly IEditablePdfDocument _document;
 
 		internal PdfEditor(IEditablePdfDocument document)
 		{

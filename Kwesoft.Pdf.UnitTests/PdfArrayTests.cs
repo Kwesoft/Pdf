@@ -53,9 +53,10 @@ namespace Kwesoft.Pdf.UnitTests
 		{
 			var obj = new Mock<PdfObject>();
 			var document = new Mock<IEditablePdfDocument>();
-			var arr = new PdfArray();
-
-			arr.Document = document.Object;
+			var arr = new PdfArray
+			{
+				Document = document.Object
+			};
 			arr.Add(obj.Object);
 
 			document.Verify(x => x.Add(arr, obj.Object));

@@ -28,7 +28,7 @@ namespace Kwesoft.Pdf
 
 		public override int GetHashCode()
 		{
-			return Value.GetHashCode();
+			return HashCode.Combine(Value);
 		}
 
 		public static implicit operator PdfArray(List<PdfObject> value)
@@ -49,8 +49,10 @@ namespace Kwesoft.Pdf
 
 		internal override byte[] GetBytes(Encoding encoding)
 		{
-			var result = new List<byte[]>(Value.Count * 2 + 1);
-			result.Add(encoding.GetBytes(PdfKeywords.ArrayStart));
+			var result = new List<byte[]>(Value.Count * 2 + 1)
+			{
+				encoding.GetBytes(PdfKeywords.ArrayStart)
+			};
 			var first = true;
 			foreach (var value in Value)
 			{

@@ -63,9 +63,10 @@ namespace Kwesoft.Pdf.UnitTests
 			var key = new Mock<PdfName>();
 			var obj = new Mock<PdfObject>();
 			var document = new Mock<IEditablePdfDocument>();
-			var dictionary = new PdfDictionary();
-
-			dictionary.Document = document.Object;
+			var dictionary = new PdfDictionary
+			{
+				Document = document.Object
+			};
 			dictionary.Add(key.Object, obj.Object);
 
 			document.Verify(x => x.Add(dictionary, key.Object, obj.Object));
