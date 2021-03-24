@@ -21,4 +21,4 @@ jobs:
     - name: Pack
       run: dotnet pack -c Release -o out -p:PackageVersion=${{ github.event.inputs.version }}
     - name: PushNuget
-      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
+      run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_API_KEY}} --skip-duplicate
