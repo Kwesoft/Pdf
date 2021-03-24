@@ -17,6 +17,8 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
-    - name: Build
+        dotnet-version: 3.1.x
+    - name: Pack
       run: dotnet pack -c Release -o out -p:PackageVersion=${{ github.event.inputs.version }}
+    - name: PushNuget
+      run: dotnet nuget push *.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{secrets.PUBLISH_TO_NUGET_ORG}} --skip-duplicate
