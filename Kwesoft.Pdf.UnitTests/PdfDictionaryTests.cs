@@ -58,6 +58,24 @@ namespace Kwesoft.Pdf.UnitTests
 		}
 
 		[Test]
+		public void Upsert()
+		{
+			var key = new Mock<PdfName>();
+			key.Setup(x => x.Equals(key)).Returns(true);
+
+			var obj = new Mock<PdfObject>();
+			var obj2 = new Mock<PdfObject>();
+			var document = new Mock<IEditablePdfDocument>();
+			var dictionary = (PdfDictionary)new Dictionary<PdfName, PdfObject>() { { key.Object, obj.Object } };
+			dictionary.Document = document.Object;
+
+			dictionary.Upsert(key.Object, obj2.Object);
+
+			document.Verify(x => x.Remove(dictionary, key.Object));
+			document.Verify(x => x.Add(dictionary, key.Object, obj2.Object));
+		}
+
+		[Test]
 		public void Add()
 		{
 			var key = new Mock<PdfName>();

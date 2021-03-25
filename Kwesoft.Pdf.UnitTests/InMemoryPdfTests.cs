@@ -76,7 +76,7 @@ namespace Kwesoft.Pdf.UnitTests
 		[Test]
 		public void Replace()
 		{
-			_inMemoryPdf.Replace(2, 3, new byte[] { 11 });
+			((IEditablePdfDocument)_inMemoryPdf).Replace(2, 3, new byte[] { 11 });
 			var result = _inMemoryPdf.GetBytes();
 			new byte[] { 0, 1, 11, 5 }.AssertAllEqual(result);
 		}

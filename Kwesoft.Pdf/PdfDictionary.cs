@@ -82,6 +82,13 @@ namespace Kwesoft.Pdf
 				}
 		}
 
+		public void Upsert(PdfName key, PdfObject value)
+		{
+			if (Value.ContainsKey(key))
+				Remove(key);
+			Add(key, value);
+		}
+
 		public void Add(PdfName key, PdfObject value)
 		{
 			if(Document != null)

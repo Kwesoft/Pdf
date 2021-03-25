@@ -8,5 +8,7 @@
 		void Save(string filename);
 		byte[] GetBytes();
 		PdfIndirectReference Add(PdfObject obj);
+		PdfDictionary GetPages();
+		long GetPageCount();
 	}
 }

@@ -88,5 +88,9 @@ namespace Kwesoft.Pdf
 		void IEditablePdfDocument.Edit<TPdfObject>(TPdfObject value, Action edit) => _editor.Edit(value, edit);
 
 		PdfIndirectReference IPdfDocument.Add(PdfObject obj) => _editor.Add(obj);
+
+		public PdfDictionary GetPages() => (PdfDictionary)((PdfIndirectReference)Root["Pages"]).Read();
+
+		public long GetPageCount() => ((PdfInteger)GetPages()["Count"]).Value;
 	}
 }
