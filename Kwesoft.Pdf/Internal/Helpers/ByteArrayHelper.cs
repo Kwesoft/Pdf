@@ -14,7 +14,7 @@ namespace Kwesoft.Pdf.Helpers
 			{
 				data[i - 1] = data[i];
 			}
-			data[^1] = newValue;
+			data[data.Length - 1] = newValue;
 		}
 
 		internal static void InsertReverse(this byte[] data, byte newValue)

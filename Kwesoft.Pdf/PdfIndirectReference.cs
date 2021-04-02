@@ -16,7 +16,7 @@ namespace Kwesoft.Pdf
 
 		public override int GetHashCode()
 		{
-			return HashCode.Combine(ObjectNumber, GenerationNumber);
+			return HashCodeHelper.Combine(ObjectNumber, GenerationNumber);
 		}
 
 		public override string ToString()

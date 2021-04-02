@@ -19,10 +19,10 @@ namespace Kwesoft.Pdf
 		{
 			var content = _document.Encoding.GetString(_document.Read(0, _document.Find(2, window => window[0] == 10 && window[1] != 37)));
 
-			return (content.Split('\n')[0]) switch
+			switch (content.Split('\n')[0])
 			{
-				"%PDF-1.4" => 1.4M,
-				_ => throw new Exception("Invalid document"),
+				case "%PDF-1.4": return 1.4M;
+				default: throw new Exception("Invalid document");
 			};
 		}
 
@@ -268,7 +268,7 @@ namespace Kwesoft.Pdf
 					e1 = e1 == -1 ? input.Length : e1;
 					e2 = e2 == -1 ? input.Length : e2;
 					var e = e1 < e2 ? e1 : e2;
-					output = $"{output}{input[i..e]}";
+					output = $"{output}{input.Substring(i, e-i)}";
 					i = e;
 				}
 			}

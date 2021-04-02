@@ -26,12 +26,12 @@ namespace Kwesoft.Pdf
 		private string _Sanitise(string input)
 		{
 			return new string(input.SelectMany(c => {
-				return c switch
+				switch(c)
 				{
-					'(' => "\\050",
-					')' => "\\051",
-					'\\' => "\\134",
-					_ => $"{c}",
+					case '(': return "\\050";
+					case ')': return "\\051";
+					case '\\': return "\\134";
+					default: return $"{c}";
 				};
 			}).ToArray());
 		}

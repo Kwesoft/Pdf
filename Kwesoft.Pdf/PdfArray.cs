@@ -28,7 +28,7 @@ namespace Kwesoft.Pdf
 
 		public override int GetHashCode()
 		{
-			return HashCode.Combine(Value);
+			return Value.GetHashCode();
 		}
 
 		public static implicit operator PdfArray(List<PdfObject> value)

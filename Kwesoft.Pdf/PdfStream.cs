@@ -59,7 +59,7 @@ namespace Kwesoft.Pdf
 
 		public override int GetHashCode()
 		{
-			return HashCode.Combine(Data, _properties);
+			return HashCodeHelper.Combine(Data, _properties);
 		}
 	}
 }
